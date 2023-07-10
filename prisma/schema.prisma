@@ -12,7 +12,47 @@ datasource db {
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+  id      Int      @id @default(autoincrement())
+  email   String   @unique
+  name    String?  @map("fullName")
+  role    Role
+  Profile Profile?
+  Post    Post[]
 }
+
+enum Role {
+  TRIAL
+  PAID
+}
+
+model Profile {
+  id     Int     @id @default(autoincrement())
+  user   User    @relation(references: [id], fields: [userId])
+  userId Int     @unique
+  bio    String?
+}
+
+model Post {
+  id         Int        @id @default(autoincrement())
+  title      String
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  published  Boolean
+  authorId   Int        @unique
+  user       User       @relation(fields: [authorId], references: [id])
+  categories Category[]
+}
+
+model Category {
+  id    Int    @id @default(autoincrement())
+  name  String
+  posts Post[]
+}
+
+// Explicit many to many
+// model CategoryToPost {
+//   category Category @relation(references: [id], fields: [catId])
+//   catId    Int      @unique
+//   post     Post     @relation(references: [id], fields: [postId])
+//   postId   Int      @unique
+// }
