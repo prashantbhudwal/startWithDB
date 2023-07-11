@@ -20,7 +20,7 @@ model User {
   profile Profile?
   posts   Post[]
 
-  @@unique([name, role])
+  // @@unique([name, role])
   @@index([id, email])
   @@map("users")
 }
@@ -70,3 +70,8 @@ enum Role {
   USER
   ADMIN
 }
+
+// enum Role {
+//   USER
+//   NONUSER
+// }
