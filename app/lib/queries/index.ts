@@ -102,7 +102,37 @@ export async function getPosts() {
   });
 }
 
+//List of users whose all posts have been published
+export async function getUsersWithAllPostsPublished() {
+  return await prisma.user.findMany({
+    where: {
+      posts: {
+        every: {
+          published: true,
+        },
+      },
+    },
+    include: {
+      posts: true,
+    },
+  });
+}
 
+//List of users whose some posts have been published
+export async function getUsersWithSomePostsPublished() {
+  return await prisma.user.findMany({
+    where: {
+      posts: {
+        some: {
+          published: true,
+        },
+      },
+    },
+    include: {
+      posts: true,
+    },
+  });
+}
 
 export async function getUsers() {
   return await prisma.user.findMany();
