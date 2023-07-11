@@ -1,23 +1,30 @@
 /*
   Warnings:
 
-  - You are about to drop the column `name` on the `User` table. All the data in the column will be lost.
-  - Added the required column `role` to the `User` table without a default value. This is not possible if the table is not empty.
+  - You are about to drop the `User` table. If the table is not empty, all the data it contains will be lost.
 
 */
 -- CreateEnum
-CREATE TYPE "Role" AS ENUM ('TRIAL', 'PAID');
+CREATE TYPE "Role" AS ENUM ('USER', 'ADMIN');
 
--- AlterTable
-ALTER TABLE "User" DROP COLUMN "name",
-ADD COLUMN     "fullName" TEXT,
-ADD COLUMN     "role" "Role" NOT NULL;
+-- DropTable
+DROP TABLE "User";
+
+-- CreateTable
+CREATE TABLE "users" (
+    "id" SERIAL NOT NULL,
+    "email" TEXT NOT NULL,
+    "firstName" TEXT NOT NULL,
+    "role" "Role" DEFAULT 'USER',
+
+    CONSTRAINT "users_pkey" PRIMARY KEY ("id")
+);
 
 -- CreateTable
 CREATE TABLE "Profile" (
     "id" SERIAL NOT NULL,
+    "bio" TEXT NOT NULL,
     "userId" INTEGER NOT NULL,
-    "bio" TEXT,
 
     CONSTRAINT "Profile_pkey" PRIMARY KEY ("id")
 );
@@ -25,11 +32,12 @@ CREATE TABLE "Profile" (
 -- CreateTable
 CREATE TABLE "Post" (
     "id" SERIAL NOT NULL,
-    "title" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
-    "published" BOOLEAN NOT NULL,
-    "authorId" INTEGER NOT NULL,
+    "title" TEXT NOT NULL,
+    "likeNum" INTEGER NOT NULL DEFAULT 0,
+    "published" BOOLEAN NOT NULL DEFAULT false,
+    "authorId" INTEGER,
 
     CONSTRAINT "Post_pkey" PRIMARY KEY ("id")
 );
@@ -49,10 +57,16 @@ CREATE TABLE "_CategoryToPost" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Profile_userId_key" ON "Profile"("userId");
+CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Post_authorId_key" ON "Post"("authorId");
+CREATE INDEX "users_id_email_idx" ON "users"("id", "email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "users_firstName_role_key" ON "users"("firstName", "role");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Profile_userId_key" ON "Profile"("userId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_CategoryToPost_AB_unique" ON "_CategoryToPost"("A", "B");
@@ -61,10 +75,10 @@ CREATE UNIQUE INDEX "_CategoryToPost_AB_unique" ON "_CategoryToPost"("A", "B");
 CREATE INDEX "_CategoryToPost_B_index" ON "_CategoryToPost"("B");
 
 -- AddForeignKey
-ALTER TABLE "Profile" ADD CONSTRAINT "Profile_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Profile" ADD CONSTRAINT "Profile_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Post" ADD CONSTRAINT "Post_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Post" ADD CONSTRAINT "Post_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_CategoryToPost" ADD CONSTRAINT "_CategoryToPost_A_fkey" FOREIGN KEY ("A") REFERENCES "Category"("id") ON DELETE CASCADE ON UPDATE CASCADE;

@@ -12,34 +12,35 @@ datasource db {
 }
 
 model User {
-  id      Int      @id @default(autoincrement())
-  email   String   @unique
-  name    String?  @map("fullName")
-  role    Role
-  Profile Profile?
-  Post    Post[]
-}
+  id    Int    @id @default(autoincrement())
+  email String @unique
+  name  String @map("firstName")
+  role  Role?  @default(USER)
 
-enum Role {
-  TRIAL
-  PAID
+  profile Profile?
+  posts   Post[]
+
+  @@unique([name, role])
+  @@index([id, email])
+  @@map("users")
 }
 
 model Profile {
-  id     Int     @id @default(autoincrement())
-  user   User    @relation(references: [id], fields: [userId])
-  userId Int     @unique
-  bio    String?
+  id     Int    @id @default(autoincrement())
+  bio    String
+  userId Int    @unique
+  user   User   @relation(fields: [userId], references: [id])
 }
 
 model Post {
   id         Int        @id @default(autoincrement())
-  title      String
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
-  published  Boolean
-  authorId   Int        @unique
-  user       User       @relation(fields: [authorId], references: [id])
+  title      String
+  likeNum    Int        @default(0)
+  published  Boolean    @default(false)
+  author     User?      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId   Int?
   categories Category[]
 }
 
@@ -49,10 +50,23 @@ model Category {
   posts Post[]
 }
 
-// Explicit many to many
-// model CategoryToPost {
-//   category Category @relation(references: [id], fields: [catId])
-//   catId    Int      @unique
-//   post     Post     @relation(references: [id], fields: [postId])
-//   postId   Int      @unique
+// model User{
+//   firstName String
+//   lastName String
+//   profile Profile?
+//   @@id([firstName,lastName])
 // }
+
+// model Profile {
+//   id Int @id 
+//   userFirstName String
+//   userLastName String
+//   user User @relation(fields: [userFirstName,userLastName] ,references: [firstName,lastName])
+
+//   @@unique([userFirstName,userLastName])
+// }
+
+enum Role {
+  USER
+  ADMIN
+}
