@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
-import { getUsers } from "@/app/lib/queries";
+import { getUsers } from "@/app/lib/queries/find";
 
 export async function GET() {
   const users = await getUsers();
   //   return new NextResponse(JSON.stringify(users));
-  console.log(users)
+  console.log(users);
   return NextResponse.json(users);
 }
 
