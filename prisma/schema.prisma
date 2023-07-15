@@ -12,13 +12,13 @@ datasource db {
 }
 
 model User {
-  id    Int    @id @default(autoincrement())
-  email String @unique
-  name  String @map("firstName")
-  role  Role?  @default(USER)
-
-  profile Profile?
-  posts   Post[]
+  id       Int      @id @default(autoincrement())
+  email    String   @unique
+  name     String   @map("firstName")
+  role     Role?    @default(USER)
+  profile  Profile?
+  posts    Post[]
+  userType String   @default("user")
 
   // @@unique([name, role])
   @@index([id, email])
