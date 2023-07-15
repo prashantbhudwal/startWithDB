@@ -39,19 +39,19 @@ export async function getUsersNotInRange() {
 
 //Id not greater than 2 and the name starts with S/s
 export async function getUsersStartingWithSOrWithIdGreaterThanTwo() {
-  const users = await prisma.user.findMany({
-    where: {
-      id: {
-        gt: 2,
-      },
-      OR: {
-        name: {
-          startsWith: "S",
-          mode: "insensitive",
-        },
-      },
-    },
-  });
+  // const users = await prisma.user.findMany({
+  //   where: {
+  //     id: {
+  //       gt: 2,
+  //     },
+  //     OR: {
+  //       name: {
+  //         startsWith: "S",
+  //         mode: "insensitive",
+  //       },
+  //     },
+  //   },
+  // });
   const alternateImplementation = await prisma.user.findMany({
     where: {
       OR: [
@@ -70,7 +70,7 @@ export async function getUsersStartingWithSOrWithIdGreaterThanTwo() {
     },
   });
 
-  return users;
+  return alternateImplementation;
 }
 
 // All published posts with github and twitter in the title
