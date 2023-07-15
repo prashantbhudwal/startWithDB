@@ -1,6 +1,6 @@
 import prisma from "@/app/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
-
+export const dynamic = 'force-dynamic';
 export async function POST(request: NextRequest) {
  
   const user = await prisma.user.create({
