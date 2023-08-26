@@ -10,6 +10,7 @@
     "latest": "npm i @prisma/client@latest next@latest react@latest react-dom@latest tailwindcss@latest daisyui@latest && npm update"
   },
   "dependencies": {
+    "@lexical/react": "^0.12.0",
     "@prisma/client": "^5.2.0",
     "@types/node": "20.4.1",
     "@types/react": "18.2.14",
@@ -18,6 +19,7 @@
     "daisyui": "^3.6.3",
     "eslint": "8.44.0",
     "eslint-config-next": "13.4.9",
+    "lexical": "^0.12.0",
     "next": "^13.4.19",
     "postcss": "8.4.25",
     "react": "^18.2.0",
