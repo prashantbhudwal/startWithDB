@@ -50,8 +50,9 @@ export default function ZodForm() {
       website: "",
     },
   });
+  const watch = form.watch();
 
-  const formData = useWatch({
+  const watchHook = useWatch({
     control: form.control,
     defaultValue: form.getValues(),
   });
@@ -95,7 +96,8 @@ export default function ZodForm() {
         />
 
         <Button type="submit">Submit</Button>
-        <pre>{JSON.stringify(formData, null, 2)}</pre>
+        <pre>{JSON.stringify(watch, null, 2)}</pre>
+        <pre>{JSON.stringify(watchHook, null, 2)}</pre>
       </form>
     </Form>
   );
