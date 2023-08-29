@@ -11,8 +11,27 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectLabel,
+  SelectSeparator,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "./ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Button } from "./ui/button";
+const grades = [
+  "Grade 1",
+  "Grade 2",
+  "Grade 3",
+  "Grade 4",
+  "Grade 5",
+  "Grade 6",
+] as const;
 
 const formSchema = z.object({
   name: z
@@ -32,11 +51,15 @@ const formSchema = z.object({
       message: "Age must be an integer",
     })
     .min(18, { message: "You must be at least 18" }),
+  grade: z.enum(grades),
   email: z.string().email({
     message: "Enter a valid email",
   }),
   website: z.string().url({
     message: "Enter a valid URL",
+  }),
+  bio: z.string().min(10, {
+    message: "Minimum 10 characters needed.",
   }),
 });
 
@@ -46,8 +69,10 @@ export default function ZodForm() {
     defaultValues: {
       name: "",
       age: 18,
+      grade: "Grade 1",
       email: "your@email.com",
       website: "",
+      bio: "Type in your bio",
     },
   });
   const watch = form.watch();
@@ -88,6 +113,49 @@ export default function ZodForm() {
               <FormLabel>Age</FormLabel>
               <FormControl>
                 <Input placeholder="Age" {...field} type="number" />
+              </FormControl>
+              <FormDescription>Type in your email.</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="grade"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Age</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a verified email to display" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {grades.map((grade) => (
+                    <SelectItem key={grade} value={grade}>
+                      {grade}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormDescription>Type in your email.</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="bio"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Age</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="Tell us a little bit about yourself"
+                  className="resize-none"
+                  {...field}
+                />
               </FormControl>
               <FormDescription>Type in your email.</FormDescription>
               <FormMessage />
